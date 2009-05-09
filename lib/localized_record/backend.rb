@@ -1,13 +1,13 @@
 require 'libxml'
 
 module LocalizedRecord
-  mattr_accessor :mode, :supported_locales
+  mattr_accessor :mode, :available_locales
   
   self.mode = :tsv
-  self.supported_locales = [ I18n.default_locale.to_s, 'es' ]
+  self.available_locales = [ I18n.default_locale.to_s, 'es' ]
   
-  def supported_modes
-    [ :tsv, :tmx ]
+  def available_modes
+    [ :tsv ] # TODO ... , :tmx ]
   end
 
   def self.localized?(value, mode = nil)
@@ -25,7 +25,7 @@ module LocalizedRecord
     end
   end
 
-  def self.parse(value, mode = nil)
+  def self.s_to_translations(value, mode = nil)
     mode ||= LocalizedRecord.mode
 
     case mode
@@ -52,7 +52,7 @@ module LocalizedRecord
     end
   end
   
-  def self.compile(translations, mode = nil)
+  def self.translations_to_s(translations, mode = nil)
     mode ||= LocalizedRecord.mode
 
     case mode

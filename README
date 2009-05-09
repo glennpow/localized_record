@@ -1,13 +1,109 @@
 LocalizedRecord
 ==============
 
-Introduction goes here.
+This plugin gives ActiveRecord objects the ability to have localized attributes.  This is similar to what the
+Globalize2 plugin does, however, LocalizedRecord doesn't require any modifications to the database.
+It utilizes a simple String column in the DB, and determines if this value is meant to be localized or not based
+on the mode that the plugin is set to.
+
+Install
+-------
+
+Install this plugin, by running this from your Rails application's root directory:
+
+  script/plugin git://github.com/glennpow/localized_record.git
 
 
-Example
-=======
+Setup
+-----
 
-Example goes here.
+First you can set the global default mode and available locales in an initializer as follows:
+
+  LocalizedRecord.mode = :tsv
+  LocalizedRecord.available_locales = [ 'en', 'es' ]
+
+Then, to add the functionality to an ActiveRecord model, add a line in the class similar this:
+
+  class Message < ActiveRecord::Base
+    has_localized :name, :description
+  end
+
+The method takes a list of attribute names which it will operate on for this model class.  Alternatively, without
+any attribute names, the method will search for all 'string' and 'text' columns, and operate on those.
+
+You can also specify a mode specifically for this ActiveRecord model class:
+
+  has_localized :name, :description, :mode => :tsv
+
+
+Usage
+-----
+
+Now, any time you access any of those attributes of a model of that class, it will check if the value is a localized
+String, then look at the current locale (I18n.locale, I18n.default_locale, or user-specified), and then return
+the proper translation.
+
+So if a model has 2 translations for it's name, one for English and one for German, and the current I18n.locale is set
+to 'de', then calling:
+
+  Message.first.name
+
+Will return:
+
+  "Hallo und Wilkommen"
+
+Or calling:
+
+  Message.first.name(:locale => 'en')
+
+Will return:
+
+  "Hello and Welcome"
+  
+
+Template Usage
+--------------
+
+There is also an ERB helper which will create text fields or text areas for your localized attributes.
+You can add them by first adding a localization select drop down (which when changed, will hide/show the fields
+for the selected locale):
+
+  <%= localization_select %>
+
+And then adding (Where 'f' is either a FormBuilder object or an ActiveRecord object):
+
+  <%= localized_text_field(f, :name) %>
+  <%= localized_text_area(f, :description) %>
+  
+This will create all the fields you need to enter values for these attributes in each of the available_locales.
+
+  
+Notes on Implementation
+-----------------------
+
+I attempted to build the plugin to be compatible with the I18n functionality now found in Rails.  I also originally
+envisioned the plugin to have custom "backends" in the same manner as the I18n.  However, I have since postponed/scrapped
+this idea in light of the fact that some DB tables may want to use different modes, so one single backend shouldn't
+necessarily be set for an application.
+
+The present "backend" does have different modes, which can and will be enhanced as time goes on.  Currently, the only fully
+supported mode is :tsv (Tab-separated values).  This mode will put translations into the string column of a record as follows:
+
+"en\tHello and Welcome\tde\tHallo und Wilkommen"
+
+Where the "\t" are tab characters, and the format is locale, value, locale, value,...
+
+The backend can also intelligently check if the current value in the column should be handled as a translation using
+the 'localized?' method.  For the :tsv mode, this check simply looks if there are any tabs in the String.
+If there is a non-tabbed String in this column, then this value is treated like any other non-localized String
+column value in Rails.
+
+
+Development Note
+----------------
+
+Please note that this plugin is very new, and still under development.  But any feedback will be greatly appreciated.
+Thanks.
 
 
 Copyright (c) 2009 Glenn Powell, released under the MIT license

@@ -26,7 +26,7 @@ module LocalizedRecord
               locale = (options[:locale] || I18n.locale).to_s
 
               begin
-                translations = LocalizedRecord.parse(value, mode)
+                translations = LocalizedRecord.s_to_translations(value, mode)
               rescue ArgumentError => e
                 raise InvalidTranslationValue.new(locale, self, attribute, value, options)
               end
@@ -47,7 +47,7 @@ module LocalizedRecord
           end
 
           define_method "#{attribute}=" do |value|
-            value = LocalizedRecord.compile(value, self.class.localized_mode) if value.is_a?(Hash)
+            value = LocalizedRecord.translations_to_s(value, self.class.localized_mode) if value.is_a?(Hash)
             super(value)
           end
         end
@@ -83,7 +83,7 @@ module LocalizedRecord
         default_locale = (default_locale || I18n.default_locale).to_s
         value = record.send(attribute)
         if LocalizedRecord.localized?(value, mode)
-          @translations = LocalizedRecord.parse(value, mode)
+          @translations = LocalizedRecord.s_to_translations(value, mode)
         else
           @translations[default_locale] = value
         end
