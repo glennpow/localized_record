@@ -81,7 +81,7 @@ module LocalizedRecord
       if record && attribute
         mode = record.class.localized_mode
         default_locale = (default_locale || I18n.default_locale).to_s
-        value = record.send(attribute)
+        value = record.send(attribute, :unlocalized => true)
         if LocalizedRecord.localized?(value, mode)
           @translations = LocalizedRecord.s_to_translations(value, mode)
         else
@@ -97,7 +97,7 @@ module LocalizedRecord
     end
     
     def errors
-      ActiveRecord::Errors.new(self) # TODO
+      ActiveRecord::Errors.new(self) # TODO?
     end
   end
 end

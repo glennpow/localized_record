@@ -22,6 +22,10 @@ First you can set the global default mode and available locales in an initialize
   LocalizedRecord.mode = :tsv
   LocalizedRecord.available_locales = [ 'en', 'es' ]
 
+Or, to include localized display names of the available locales:
+
+  LocalizedRecord.available_locales = { 'en' => I18n.t('locales.en'), 'es' => "Español" ]
+
 Then, to add the functionality to an ActiveRecord model, add a line in the class similar this:
 
   class Message < ActiveRecord::Base
