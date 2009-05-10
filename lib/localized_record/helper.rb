@@ -2,7 +2,7 @@ module LocalizedRecord
   module Helper
     def localization_select(form_or_record, options = {})
       locales = options.delete(:locales) || LocalizedRecord.available_locales
-      #if (locales.is_a?(Array) || locales.is_a?(Hash)) && locales.length > 1
+      if (locales.is_a?(Array) || locales.is_a?(Hash))
         default_locale = (options.delete(:default_locale) || I18n.default_locale).to_s
         record = case form_or_record
         when ActionView::Helpers::FormBuilder
@@ -18,9 +18,12 @@ module LocalizedRecord
         when Hash
           options_for_select(locales.map { |locale, name| [ name, locale.to_s ] }, default_locale)
         end
-        select_options = options.merge(:onchange => "$$('.localized-field-#{record_id}').invoke('hide'); $$('.localized-field-#{record_id}-' + this.options[this.selectedIndex].value).invoke('show')")
+        select_options = options.merge(
+          :disabled => locales.length <= 1,
+          :onchange => "$$('.localized-field-#{record_id}').invoke('hide'); $$('.localized-field-#{record_id}-' + this.options[this.selectedIndex].value).invoke('show')"
+        )
         select_tag("localization_select_#{record_id}", choices, select_options)
-      #end
+      end
     end
 
     def localized_fields_for(form_or_record, method, options = {}, &block)
