@@ -72,9 +72,10 @@ There is also an ERB helper which will create text fields or text areas for your
 You can add them by first adding a localization select drop down (which when changed, will hide/show the fields
 for the selected locale):
 
-  <%= localization_select %>
+  <%= localization_select(f) %>
 
-And then adding (Where 'f' is either a FormBuilder object or an ActiveRecord object):
+Where 'f' is either a FormBuilder object or an ActiveRecord object.
+And then adding:
 
   <%= localized_text_field(f, :name) %>
   <%= localized_text_area(f, :description) %>
