@@ -3,8 +3,8 @@ module LocalizedRecord
     attr_reader :locale, :record, :field, :options
     def initialize(locale, record, field, value, options)
       @record, @field, @value, @locale, @options = record, field, value, locale, options
-      super "invalid translation value: #{record.class.to_s}.#{field} (id = #{record.id}) = #{value}"
-      logger.warning(self.message) # XXX - Debug only
+      super "invalid translation value: #{record.class.to_s}.#{field} (id = #{record.id}) = #{value}", field, {}
+      Rails.logger.info(self.message) # XXX - Debug only
     end
   end
 
