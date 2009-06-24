@@ -30,7 +30,9 @@ module LocalizedRecord
 
     case mode
     when :tsv
-      translations = Hash[*value.split("\t")]
+      values = value.split("\t")
+      values << "" if values.count % 2 > 0
+      translations = Hash[*values]
       
     when :tmx
       translations = {}
