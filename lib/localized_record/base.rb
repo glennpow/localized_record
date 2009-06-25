@@ -73,7 +73,7 @@ module LocalizedRecord
     end
   end
 
-  class AttributeProxy
+  class LocalizedAttribute
     attr_reader :translations
     
     def initialize(record = nil, attribute = nil, default_locale = nil)

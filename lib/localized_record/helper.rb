@@ -37,7 +37,7 @@ module LocalizedRecord
       end
       record_id = record.try(:id) || 0
       
-      proxy = LocalizedRecord::AttributeProxy.new(record, method, default_locale)
+      proxy = LocalizedRecord::LocalizedAttribute.new(record, method, default_locale)
 
       capture do
         case form_or_record
