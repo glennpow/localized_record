@@ -11,7 +11,7 @@ Install
 
 Install this plugin, by running this from your Rails application's root directory:
 
-  script/plugin git://github.com/glennpow/localized_record.git
+  script/plugin install git://github.com/glennpow/localized_record.git
 
 
 Setup
